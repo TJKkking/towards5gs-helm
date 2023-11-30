@@ -7,7 +7,7 @@
 # the text of which is available at todo
 # or see the "LICENSE" file for more details.
 #
-# Author: Abderaouf KHICHANE, Ilhem FAJJARI, Ayoub BOUSSELMI
+# Author: Abderaouf KHICHANE, Ilhem FAJJARI, Ayoub BOUSSELMI, Ian Chen
 # Software description: An open-source project providing Helm charts to deploy 5G components (Core + RAN) on top of Kubernetes
 #
 # Default values for free5gcControlPlane chart.
@@ -54,13 +54,9 @@ udr:
     name: towards5gs/free5gc-udr
     pullPolicy: Always
   service:
-    name: udr-nudr
     type: ClusterIP
     port: 80
-  configmap:
-    name: udr-configmap
   volume:
-    name: udr-volume
     mount: /free5gc/config/
   podAnnotations: {}
     # additional annotations
@@ -114,19 +110,10 @@ udr:
     # the kind of log output
       # debugLevel: how detailed to output, value: trace, debug, info, warn, error, fatal, panic
       # ReportCaller: enable the caller report or not, value: true or false
-    logger:
-      UDR:
-        debugLevel: info
-        ReportCaller: false
-      MongoDBLibrary:
-        debugLevel: info
-        ReportCaller: false
-      PathUtil:
-        debugLevel: info
-        ReportCaller: false
-      OpenApi:
-        debugLevel: info
-        ReportCaller: false
+    logger: # log output setting
+      enable: true # true or false
+      level: info # how detailed to output, value: trace, debug, info, warn, error, fatal, panic
+      reportCaller: false # enable the caller report or not, value: true or false
 
 free5gc:
   configmap:
@@ -141,7 +128,7 @@ free5gc:
     #info
     #debug
     #trace
-    logger:
-      UDR:
-        debugLevel: info
-        ReportCaller: true
+    logger: # log output setting
+      enable: true # true or false
+      level: info # how detailed to output, value: trace, debug, info, warn, error, fatal, panic
+      reportCaller: false # enable the caller report or not, value: true or false

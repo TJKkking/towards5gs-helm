@@ -1,17 +1,17 @@
 # free5gc Helm chart
 
-This is a Helm chart for deploying the [free5GC](https://github.com/free5gc/free5gc)-v3.0.5 on Kubernetes. Tt can be used to deploy the following Helm charts:
- - [free5gc-amf](./charts/free5gc-amf).
- - [free5gc-ausf](./charts/free5gc-ausf).
- - [free5gc-n3iwf](./charts/free5gc-n3iwf).
- - [free5gc-nrf](./charts/free5gc-nrf).
- - [free5gc-nssf](./charts/free5gc-nssf).
- - [free5gc-pcf](./charts/free5gc-pcf).
- - [free5gc-smf](./charts/free5gc-smf).
- - [free5gc-udm](./charts/free5gc-udm).
- - [free5gc-udr](./charts/free5gc-udr).
- - [free5gc-upf](./charts/free5gc-upf).
- - [free5gc-webui](./charts/free5gc-webui).
+This is a Helm chart for deploying the [free5GC](https://github.com/free5gc/free5gc) on Kubernetes. It can be used to deploy the following Helm charts:
+ - [free5gc-amf](./charts/free5gc-amf)
+ - [free5gc-ausf](./charts/free5gc-ausf)
+ - [free5gc-n3iwf](./charts/free5gc-n3iwf)
+ - [free5gc-nrf](./charts/free5gc-nrf)
+ - [free5gc-nssf](./charts/free5gc-nssf)
+ - [free5gc-pcf](./charts/free5gc-pcf)
+ - [free5gc-smf](./charts/free5gc-smf)
+ - [free5gc-udm](./charts/free5gc-udm)
+ - [free5gc-udr](./charts/free5gc-udr)
+ - [free5gc-upf](./charts/free5gc-upf)
+ - [free5gc-webui](./charts/free5gc-webui)
 
 ## Prerequisites
  - A Kubernetes cluster ready to use with all worker nodes using kernel `5.0.0-23-generic` and they should contain gtp5g kernel module.
@@ -33,7 +33,7 @@ uname -r
 It should be `5.0.0-23-generic`.
 
 ### Install the gtp5g kernel module on worker nodes
-Please follow [Free5GC's wiki](https://github.com/free5gc/free5gc/wiki/Installation#c-install-user-plane-function-upf).
+Please follow [free5GC's wiki](https://github.com/free5gc/free5gc/wiki/Installation#c-install-user-plane-function-upf).
 
 
 ### Create a Persistent Volume
@@ -111,8 +111,7 @@ This chart allows you to customize its installation. The table below shows the p
 | Parameter | Description | Default value |
 | --- | --- | --- |
 | `deployMongoDB` | If `true` then the MongoDB subchart will be installed. | `true` |
-| `deploy<NFName in capital letters>` | If `true` then the `<NFName>` subchart will be installed. `<NFName>` must be one of the following: AMF, AUSF, NRF, NSSF, PCF, SMF, UDM, UDR, UPF, WEBUI. | `true` |
-| `deployN3IWF` | If `true` then the N3IWF subchart will be installed. | `false` |
+| `deploy<NFName in capital letters>` | If `true` then the `<NFName>` subchart will be installed. `<NFName>` must be one of the following: AMF, AUSF, N3IWF, NRF, NSSF, PCF, SMF, UDM, UDR, UPF, WEBUI. | `see values.yaml` |
 
 ### Global and subcharts' parameters
 Please check this [link](https://helm.sh/docs/chart_template_guide/subcharts_and_globals/) to see how to customize global and subcharts' parameters.
@@ -122,7 +121,7 @@ Please check this [link](https://helm.sh/docs/chart_template_guide/subcharts_and
 | `global.projectName` | The name of the project. | `free5gc` |
 | `global.userPlaneArchitecture` | User plane topology. Possible values are `single` and `ulcl` | `single` |
 | `global.sbi.scheme` | The SBI scheme for all control plane NFs. Possible values are `http` and `https` | `http` |
-| `global.nrf.service.name` | The name of the service used to expose the NRF SBI interface. | `nrf-service` |
+| `global.nrf.service.name` | The name of the service used to expose the NRF SBI interface. | `nrf-nnrf` |
 | `global.nrf.service.type` | The type of the NRF SBI service. | `NodePort` |
 | `global.nrf.service.port` | The NRF SBI port number. | `8000` |
 | `global.nrf.service.port` | The NRF SBI service nodePort number. | `30800` |
@@ -138,6 +137,7 @@ Please check this [link](https://helm.sh/docs/chart_template_guide/subcharts_and
 ### N2 Network parameters
 | Parameter | Description | Default value |
 | --- | --- | --- |
+| `global.n2network.enabled` | If `true` then N2-related Network Attachment Definitions resources will be created. | `true` |
 | `global.n2network.name` | N2 network name. | `n2network` |
 | `global.n2network.masterIf` | N2 network MACVLAN master interface. | `eth0` |
 | `global.n2network.subnetIP` | N2 network subnet IP address. | `10.100.50.248` |
@@ -147,6 +147,7 @@ Please check this [link](https://helm.sh/docs/chart_template_guide/subcharts_and
 ### N3 Network parameters
 | Parameter | Description | Default value |
 | --- | --- | --- |
+| `global.n3network.enabled` | If `true` then N3-related Network Attachment Definitions resources will be created. | `true` |
 | `global.n3network.name` | N3 network name. | `n3network` |
 | `global.n3network.masterIf` | N3 network MACVLAN master interface. | `eth0` |
 | `global.n3network.subnetIP` | N3 network subnet IP address. | `10.100.50.232` |
@@ -156,6 +157,7 @@ Please check this [link](https://helm.sh/docs/chart_template_guide/subcharts_and
 ### N4 Network parameters
 | Parameter | Description | Default value |
 | --- | --- | --- |
+| `global.n4network.enabled` | If `true` then N4-related Network Attachment Definitions resources will be created. | `true` |
 | `global.n4network.name` | N4 network name. | `n4network` |
 | `global.n4network.masterIf` | N4 network MACVLAN master interface. | `eth0` |
 | `global.n4network.subnetIP` | N4 network subnet IP address. | `10.100.50.240` |
@@ -165,6 +167,7 @@ Please check this [link](https://helm.sh/docs/chart_template_guide/subcharts_and
 ### N6 Network parameters
 | Parameter | Description | Default value |
 | --- | --- | --- |
+| `global.n6network.enabled` | If `true` then N6-related Network Attachment Definitions resources will be created. | `true` |
 | `global.n6network.name` | N6 network name. | `n6network` |
 | `global.n6network.masterIf` | N6 network MACVLAN master interface. The IP address of this interface must be in the N6 network subnet IP rang. | `eth1` |
 | `global.n6network.subnetIP` | N6 network subnet IP address (The IP address of the Data Network. | `10.100.100.0` |
@@ -177,6 +180,7 @@ These parameters if `global.userPlaneArchitecture` is set to `ulcl`.
 | Parameter | Description | Default value |
 | --- | --- | --- |
 These parameters if `global.userPlaneArchitecture` is set to `ulcl`.
+| `global.n9network.enabled` | If `true` then N9-related Network Attachment Definitions resources will be created. | `true` |
 | `global.n9network.name` | N9 network name. | `n9network` |
 | `global.n9network.masterIf` | N9 network MACVLAN master interface. The IP address of this interface must be in the N9 network subnet IP rang. | `eth0` |
 | `global.n9network.subnetIP` | N9 network subnet IP address (The IP address of the Data Network. | `10.100.50.224` |

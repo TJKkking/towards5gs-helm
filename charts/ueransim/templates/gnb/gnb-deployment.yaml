@@ -35,8 +35,9 @@ spec:
         component: {{ .name }}
       annotations:
         {{- include "ueransim.gnbAnnotations" $ | nindent 8 }}
+        {{- if or $.Values.global.n2network.enabled $.Values.global.n3network.enabled}}
         k8s.v1.cni.cncf.io/networks: '[
-        {{- if not .amf.service.ngap.enabled }}
+        {{- if $.Values.global.n2network.enabled }}
             { "name": "{{ $.Values.global.n2network.name }}-{{ include "ueransim.fullname" $ }}",
               "interface": "n2",
               "ips": [ "{{ .n2if.ipAddress }}/{{ $.Values.global.n2network.cidr }}" ],
@@ -47,14 +48,20 @@ spec:
               "interface": "n3",
               "ips": [ "{{ .n3if.ipAddress }}/{{ $.Values.global.n3network.cidr }}" ],
               "gateway": [ "{{ $.Values.global.n3network.gatewayIP }}" ]
-            }          
+            }
             ]'
-
+        {{- end }}
     spec:
       imagePullSecrets:
         {{- toYaml .imagePullSecrets | nindent 8 }}
       securityContext:
         {{- toYaml .podSecurityContext | nindent 8 }}
+      initContainers:
+      - name: wait-amf
+        {{- with $.Values.initcontainers.sctp_test }}
+        image: {{ .image }}:{{ .tag }}
+        {{- end }}
+        command: ["sh", "-c", "until sctp_test -s -H 0.0.0.0 -P 25000 -h {{ .amf.n2if.ipAddress }} -p {{ .amf.n2if.port }}; do echo waiting for the AMF; sleep 2; done;"]
       containers:
       - image: {{ .image.name }}:{{ .image.tag | default $.Chart.AppVersion }}
         name: {{ .name }}
@@ -66,7 +73,7 @@ spec:
           capabilities:
             add: ["NET_ADMIN"]
         command: ["./nr-gnb"]
-        args: ["-c", "{{ .volume.mount }}/gnb-config.yaml"]  
+        args: ["-c", "{{ .volume.mount }}/gnb-config.yaml"]
         volumeMounts:
         - mountPath: {{ .volume.mount }}
           name: {{ .volume.name }}

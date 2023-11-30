@@ -15,7 +15,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .configmap.name }}
+  name: {{ include "free5gc-upf.fullname" $ }}-{{ .name }}-configmap
   labels:
     app: {{ $.Values.global.projectName }}
 data:
@@ -52,8 +52,11 @@ data:
     iptables -t nat -A POSTROUTING -o n9 -j MASQUERADE
     iptables -t nat -A POSTROUTING -o n3 -j MASQUERADE
 
+    {{- if $.Values.upfb.configmap.wrapperAdditionalCommands }}
+    {{- $.Values.upfb.configmap.wrapperAdditionalCommands | toYaml | indent 2 }}
+    {{- end }}
+
     /free5gc/upf/upf -c {{ .volume.mount }}/upfcfg.yaml
 
 {{- end }}
 {{- end }}
-
